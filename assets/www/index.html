@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title> Time Bomb Defuse </title>
+		<meta content="text/html; charset=UTF-8">
+		<link rel="stylesheet" type="text/css" href="css/index.css">
+		<script type="text/javascript" charset="utf-8" src="cordova.js"></script>
+		<script type="text/javascript" charset="utf-8">
+			function onLoad() {
+				document.addEventListener("deviceready", onDeviceReady, true);
+			}
+						
+			function onDeviceReady(){
+				document.addEventListener("backbutton", onBackKeyDown, false);
+				testLocalStorage();
+			}
+			
+			function testLocalStorage() {
+				try{
+					var x =	JSON.parse(window.localStorage.getItem("localx"));
+					var y =	JSON.parse(window.localStorage.getItem("localy"));
+					var z =	JSON.parse(window.localStorage.getItem("localz"));
+					var sens =	JSON.parse(window.localStorage.getItem("sensi"));
+					var turns =	JSON.parse(window.localStorage.getItem("turns"));
+					var tuto = window.localStorage.getItem("tutorial");
+				}catch(e){
+					console.log(e);
+				}
+				
+				if(x == null){
+					x = 0;
+					window.localStorage.setItem("localx",JSON.stringify(x));
+					console.log("x setup");
+				}
+				if(y == null){
+					y = 0;
+					window.localStorage.setItem("localy",JSON.stringify(y));
+					console.log("y setup");
+				}
+				if(z == null){
+					z = 9.8;
+					window.localStorage.setItem("localz",JSON.stringify(z));
+					console.log("z setup");
+				}
+				if(sens == null || isNaN(sens) != false){
+					sens = parseFloat(2.4);
+					window.localStorage.setItem("sensi",JSON.stringify(sens));
+					console.log("sens setup");
+				}
+				if(turns == null){
+					turns = 7;
+					window.localStorage.setItem("turns",JSON.stringify(turns));
+					console.log("turns setup");
+				}
+				if(tuto == null){
+					window.localStorage.setItem("tutorial", "y");
+					console.log("tutorial will be displayed");
+				}
+			}
+			
+			function goToGame(){
+				var tuto = window.localStorage.getItem("tutorial");
+				if(tuto == "y"){
+					window.localStorage.setItem("tutorial", "n");
+					location.href="tutorial.html";
+				}else{
+					location.href="test.html";
+				}
+			}
+			
+			function onBackKeyDown() {
+   				navigator.app.exitApp();
+			}
+			function exitFromApp() {
+				navigator.app.exitApp();
+			}
+		</script>
+	</head>
+
+	<body onload="onLoad();">
+
+		<h4>Time Bomb Defuse</h4>
+
+		<button id="newgame" onclick="goToGame()">Play </button>
+		<br>
+		<button id="tutorial" onclick="location.href='tutorial.html';">How to play</button>
+		<br>
+		<button id="calibration" onclick="location.href='calibration.html';">Calibration </button>
+		<br>
+		<button id="settings" onclick="location.href='options.html';">Settings </button>
+		<br>
+		<button name="buttonClick" onclick="exitFromApp()">Exit Game </button>
+
+	</body>
+</html>

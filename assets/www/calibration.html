@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Acceleration Example</title>
+
+    <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
+    <script type="text/javascript" charset="utf-8" src="jquery-2.0.3.min.js"></script>
+    <script type="text/javascript" charset="utf-8">
+    
+	// The watch id references the current `watchAcceleration`
+    var watchID = null;
+    
+	var x;
+	var y;
+	var z;
+	
+	$(document).ready(function(){
+		$('#content').hide();
+	});
+    // Wait for Cordova to load
+    //
+    document.addEventListener("deviceready", onDeviceReady, false);
+	
+    // Cordova is ready
+    //
+    function onDeviceReady() {
+    	$('#message').hide();
+    	$('#content').show();
+        startWatch();
+    }
+
+
+    function startWatch() {
+    	// Update acceleration every 0.1 seconds
+    	var options = { frequency: 100 };
+        watchID = navigator.accelerometer.watchAcceleration(onSuccess, onError, options);
+   	}
+   	
+   	function stopWatch() {
+		if (watchID) {
+	    	navigator.accelerometer.clearWatch(watchID);
+	        watchID = null;
+		}
+	}
+	
+	function onSuccess(acceleration) {
+		x = acceleration.x;
+		y = acceleration.y;
+		z = acceleration.z;
+
+    }
+    
+    // onError: Failed to get the acceleration
+    //
+    function onError() {
+        alert('Could not get your acceleration!');
+    }
+	
+	function calibrate(){
+		setTimeout(function(){
+			try{
+				window.localStorage.setItem("localx", JSON.stringify(x));
+				window.localStorage.setItem("localy", JSON.stringify(y));
+				window.localStorage.setItem("localz", JSON.stringify(z));
+				showAlert();
+			}catch (e){
+				console.log(e);
+				alert('e' + e);
+				
+			}
+			
+		}, 300);
+	}
+	
+	function toIndex(){
+		window.location.href = "index.html";
+	}
+	
+    function showAlert() {
+    	var localex = JSON.parse(window.localStorage.getItem("localx"));
+		var localey = JSON.parse(window.localStorage.getItem("localy"));
+		var localez = JSON.parse(window.localStorage.getItem("localz"));
+	    navigator.notification.alert(
+	        'Calibration successful!\nX = ' + localex + '\nY = ' + localey + '\nZ = ' + localez,  // message
+	        toIndex,         // callback
+	        'Calibration',            // title
+	        'Ok'                  // buttonName
+	    );
+    }
+
+	
+
+
+    </script>
+  </head>
+  <body>
+  	<p id="message">Wait for accelerometer to load...</p>
+  	<div id="content">
+    <h1>Game calibration</h1>
+    <p>Put your device on stable position so that youre facing the screen. </p>
+    <p>The easiest way to do this is to put your device on a table.</p>
+    <p>Press Calibrate button to continue.</p>
+    <button id="calibrationButton" onclick="calibrate()">Calibrate</button>
+    </div>
+    <button onclick="location.href='index.html';">Back to menu</button>
+  </body>
+</html>

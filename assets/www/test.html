@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Bomb Game</title>
+		<script type="text/javascript" charset="utf-8" src="jquery-2.0.3.min.js"></script>
+		<script type="text/javascript" charset="utf-8" src="cordova.js"></script>
+		<link rel='stylesheet' type='text/css' href='css/game.css'/>
+	</head>
+	<body>
+		<div id="gameMechanics">
+			<div id="timerContainer">
+				<div id="timer"></div>
+				<div id="accelerometer"></div>
+			</div>
+			<div id="turnsleft"></div>
+			<div id="combinationContainer">
+				<span id="nextPlayer">Next Player</span>
+				<table>
+					<tr>
+						<td>Type: </td>
+						<td id="comb0"></td>
+						<td>-</td>
+						<td id="comb1"></td>
+						<td>-</td>
+						<td id="comb2"></td>
+						<td>-</td>
+						<td id="comb3"></td>
+					</tr>
+				</table>
+			</div>
+			<div id="buttonContainer">
+				<table>
+					<tr>
+						<td>
+						<button id="b1" class="bombB">
+							1
+						</button></td>
+						<td>
+						<button id="b2" class="bombB">
+							2
+						</button></td>
+						<td>
+						<button id="b3" class="bombB">
+							3
+						</button></td>
+						<td>
+						<button id="b4" class="bombB">
+							4
+						</button></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<div id="endGameButtons">
+			<button id="restartButton" onclick="location.reload()">
+				Play Again
+			</button>
+			<button id="mainmenuButton" onclick="location.href='index.html';">
+				Exit To Main Menu
+			</button>
+		</div>
+		<div id="background">
+			<img src="images/pommi_tyhja.png" class="stretch" alt="" />
+		</div>
+
+		<div id="crack">
+			<img src="images/crack2.png" class="stretch" alt="" />
+		</div>
+	</body>
+	<script type="text/javascript" charset="utf-8">
+		// The watch id references the current `watchAcceleration`
+		var watchID = null;
+
+		var x, y, z;
+
+		var xLimiter;
+		var xNegLimiter;
+		var yLimiter;
+		var yNegLimiter;
+		var zLimiter;
+		var zNegLimiter;
+
+		var randNumber;
+		var combinationList = [];
+		var j;
+		// global multiplier Used in id recognition
+		var startTime;
+		var realStartTime;
+		//used to calculate end time
+		var timeLeft;
+
+		var turnsLeft;
+
+		//media
+		var my_media;
+		var my_media2;
+		var beepInterval;
+		var beepPace;
+
+		//hiding before loading
+		$('#endGameButtons').hide();
+		$('#nextPlayer').hide();
+		$('#crack').hide();
+
+		// window.onload = initialize();
+
+		function initialize() {
+			j = 0;
+			my_media = null;
+			my_media2 = null;
+			var beepPace = 500;
+
+			$('#endGameButtons').hide();
+			$('#nextPlayer').hide();
+			$('#crack').hide();
+			// get x,y,z and turnsleft values from localstorage
+			try {
+				var x = JSON.parse(window.localStorage.getItem("localx"));
+				var y = JSON.parse(window.localStorage.getItem("localy"));
+				var z = JSON.parse(window.localStorage.getItem("localz"));
+				var sens = JSON.parse(window.localStorage.getItem("sensi"));
+				sens = parseFloat(sens);
+				xLimiter = x + sens;
+				xNegLimiter = x - sens;
+				yLimiter = y + sens;
+				yNegLimiter = y - sens;
+				zLimiter = z + sens;
+				zNegLimiter = z - sens;
+				console.log(sens);
+				console.log(x + y + z);
+				var turns = JSON.parse(window.localStorage.getItem("turns"));
+				console.log(turns);
+				turnsLeft = turns;
+			} catch (e) {
+				console.log(e);
+			}
+			console.log("initializing complete");
+			startWatch();
+			/*playBeep(); edit for teros class*/
+			startGame();
+		}
+
+		// Wait for Cordova to load
+		//
+		document.addEventListener("deviceready", onDeviceReady, false);
+
+		// Cordova is ready
+		//
+		function onDeviceReady() {
+			initialize();
+		}
+
+		// Start watching the acceleration
+		//
+		function startWatch() {
+			// Update acceleration every 0.1 seconds
+			var options = {
+				frequency : 100
+			};
+			watchID = navigator.accelerometer.watchAcceleration(onSuccess, onError, options);
+		}
+
+		// Stop watching the acceleration
+		//
+		function stopWatch() {
+			if (watchID) {
+				navigator.accelerometer.clearWatch(watchID);
+				watchID = null;
+			}
+		}
+
+		function onSuccess(acceleration) {
+			x = acceleration.x;
+			y = acceleration.y;
+			z = acceleration.z;
+			gameLogics();
+
+			/*var element = document.getElementById('accelerometer');
+			 element.innerHTML = 'Acceleration X: ' + acceleration.x + '<br />' +
+			 'Acceleration Y: ' + acceleration.y + '<br />' +
+			 'Acceleration Z: ' + acceleration.z + '<br />' +
+			 'Timestamp: '      + acceleration.timestamp + '<br />';*/
+
+		}
+
+		// onError: Failed to get the acceleration
+		//
+		function onError() {
+			alert('onError!');
+		}
+
+		function startGame() {
+			startTime = new Date().getTime() + 20000;
+			realStartTime = new Date().getTime();
+			timer(true);
+			$("#turnsleft").text(turnsLeft);
+			generateCombination();
+		}
+
+		function timer(state) {
+			if (state == false) {
+				clearInterval(calcTimeLeft);
+			} else {
+				calcTimeLeft = setInterval(function() {
+					timeLeft = (startTime - new Date().getTime()) / 1000;
+					timeLeft = timeLeft.toFixed(2);
+					if (timeLeft <= 0.00) {
+						endGame(false);
+					}
+					$("#timer").text(timeLeft);
+				}, 30);
+			}
+		}
+
+		function gameLogics() {
+
+			if (z <= zNegLimiter) {
+				endGame(false);
+			}
+
+			if (z >= zLimiter) {
+				endGame(false);
+			}
+
+			if (x >= xLimiter || y >= yLimiter) {
+				endGame(false);
+			}
+
+			if (x <= xNegLimiter || y <= yNegLimiter) {
+				endGame(false);
+			}
+		}
+
+		// touchstart is quicker than buttonclick
+		document.addEventListener("deviceready", function() {
+			
+			$(document).on('touchstart', '.bombB', function(){
+				var bid = $(this).attr("id");
+				checkButtonClick(bid);
+			});
+		});
+
+		function checkButtonClick(buttonId) {
+			//right button click
+			if (combinationList[0] == buttonId) {
+				$("#comb" + j).css("color", "#66FF33");
+				//changes the right number to green in combination
+				j++;
+				combinationList.shift();
+			}
+
+			if (combinationList.length == 0) {
+				turnsLeft -= 1;
+				$("#turnsleft").text(turnsLeft);
+				if (turnsLeft == 0) {
+					endGame(true);
+				}
+				j = 0;
+				$("td").css("color", "#FFFFFF");
+				//changes the digits back to normal color
+				moreTime();
+				nextPlayer();
+			}
+		}
+
+		function nextPlayer() {
+			$('#combinationContainer table').hide();
+			$('#nextPlayer').show();
+			setTimeout(function() {
+				$('#nextPlayer').hide();
+				generateCombination();
+				$('#combinationContainer table').show();
+			}, 350);
+		}
+
+		function generateCombination() {
+			combinationList = [];
+			var randToId = "";
+			// random number converted to id
+			// generates list of "id's" length is 4 and combinations can be 1-4
+			for (var i = 0; i < 4; i++) {
+				randNumber = Math.floor((Math.random() * 4)) + 1;
+				randToId = "b" + randNumber;
+				$("#comb" + i).text(randNumber);
+				// this makes the number appear in html
+				combinationList.push(randToId);
+			}
+
+		}
+
+		function moreTime() {
+			console.log("moretime");
+			startTime = startTime + 6000;
+		}
+
+		function endGame(win) {
+			stopAudio();
+			stopWatch();
+			console.log("end");
+			var notifTime = 500;
+			timer(false);
+			$('#gameMechanics').hide();
+			if (win == false) {
+				/*playExplosion();*/
+				$("#background img").attr("src", "images/Pommi_Lose.png");
+				$('#crack').show();
+				var endTime = new Date().getTime();
+				endTime = (endTime - realStartTime ) / 1000;
+				setTimeout(function() {
+					$('#endGameButtons').show();
+				}, notifTime);
+			}
+
+			if (win == true) {
+				$("#background img").attr("src", "images/Pommi_Win.png");
+				var endTime = new Date().getTime();
+				endTime = endTime - realStartTime / 1000;
+				setTimeout(function() {
+					$('#endGameButtons').show();
+				}, notifTime);
+
+			}
+		}
+
+		function playBeep() {
+			my_media = new Media("/android_asset/www/music/beep.wav", onSuccessMusic, onErrorMusic);
+			beepInterval = setInterval(function() {
+				my_media.play();
+			}, beepPace);
+		}
+
+		// Stop and release audio
+		//
+		function stopAudio() {
+			if (my_media) {
+				clearInterval(beepInterval);
+			}
+			if (my_media != null) {
+				my_media.release();
+			}
+
+		}
+
+		// onSuccess Callback
+		//
+		function onSuccessMusic() {
+			console.log("success");
+		}
+
+		// onError Callback
+		//
+		function onErrorMusic(error) {
+			alert('code: ' + error.code + '\n' + 'message: ' + error.message + '\n');
+		}
+
+		//explosion sound currently throws an error sometimes
+		function playExplosion() {
+			if (my_media != null) {
+				my_media.release();
+			}
+			my_media = new Media("/android_asset/www/music/bomb.wav", onSuccessMusic, onErrorMusic);
+			my_media.play();
+		}
+
+	</script>
+</html>

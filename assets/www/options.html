@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+
+		<title>Options</title>
+		<script type="text/javascript" charset="utf-8" src="jquery-2.0.3.min.js"></script>
+		<script type="text/javascript" charset="utf-8" src="cordova.js"></script>
+    	<script type="text/javascript" charset="utf-8" src="jquery-mobile.js"></script>
+    	<link rel='stylesheet' type='text/css' href='css/jquery-mobile.css'/>
+    	<link rel='stylesheet' type='text/css' href='css/options.css'/>
+    	<style>    	
+    	#succMessage {
+			display: none;
+			background-color:#83F52C;
+			height:40px;
+		}
+		</style>
+
+	</head>
+	<body>
+		
+		
+		<div data-role="header">
+			<h1>Options</h1>
+		</div>
+		<div data-role="content">
+			<label for="slider-0">Turns:</label>
+			<input type="range" name="slider-0" id="slider1" value="7" min="2" max="35" />
+			<p>Determines how many turns it takes to defuse the bomb.</p>
+			<label for="slider-2"><b>Sensitivity</b></label>
+			<input type="range" name="slider-2" id="slider2" value="3.4" min="1" max="9" step="0.1" />
+			<p> Determines how easily bomb will explode. Higher value, harder game.</p>
+			<div id ="succMessage">Save succesful! </div>
+			<button id="save1" data-theme="b">Save settings</button>
+			<button id="save3">Back to menu</button>
+		</div>
+		<script type="text/javascript">
+			document.addEventListener("deviceready", onDeviceReady, false);
+			function onDeviceReady() {
+	    	}
+			$(document).ready(function(){
+				console.log("LOLO");
+				try{
+					console.log("balas");
+					var sens =	JSON.parse(window.localStorage.getItem("sensi"));
+					var turns =	JSON.parse(window.localStorage.getItem("turns"));
+					sens = (sens - 10) * -1;
+					$( "#slider1" ).val(turns).slider("refresh");
+					$( "#slider2" ).val(sens).slider("refresh");
+				}catch(e){
+					console.log("Trying to get data 'turns' and 'sensitivity' " + e);
+				}
+				
+				$('#save1').click(function(){
+					var turns = $('#slider1').val();
+					var sensitivity = $('#slider2').val();
+					sensitivity = 10 - parseFloat(sensitivity);
+					console.log(sensitivity);
+					// save it to localstorage
+					try{
+						window.localStorage.setItem("sensi", JSON.stringify(sensitivity));
+						window.localStorage.setItem("turns", JSON.stringify(turns));
+						$('#succMessage').fadeIn("slow", function(){
+							$('#succMessage').fadeOut("slow");
+						});
+					}catch (e){
+						console.log(e);
+					}
+				});
+				
+				
+				$('#save3').click(function(){
+					window.location.href = "index.html";
+				});
+			});
+			
+			
+		</script>
+	</body>
+</html>

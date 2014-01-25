@@ -1,0 +1,144 @@
+* {
+-webkit-tap-highlight-color: rgba(0,0,0,0); /* make transparent link selection, adjust last value opacity 0 to 1.0 */
+}
+
+html {
+	background-color: #000000;
+}
+
+body {
+	margin: 0px;
+	padding: 0px;
+	width: 90%;
+}
+
+#timerContainer {
+	position: relative;
+	top: 60px;
+	left: 20%;
+	width: 50%;
+	margin: 0px auto 0px auto;
+}
+
+#timer {
+	width: 100%;
+	color: #FF0000;
+	font-size: 2em;
+}
+
+#turnsleft {
+	position: fixed;
+	top: 17%;
+	left: 73%;
+	color: #FFFFFF;
+	font-size: 2.3em;
+}
+
+#combinationContainer {
+	position: fixed;
+	top: 35%;
+	left: 25%;
+	width: 70%;
+	color: #FFFFFF;
+	font-size: 2.3em;
+}
+
+#endGameButtons {
+	position: fixed;
+	top: 55%;
+	left: 20%;
+}
+
+#endGameButtons button {
+	background-color: #C0C0C0;
+	margin-left: 10px;
+	border-radius: 10px 10px 10px 10px;
+	z-index: 1;
+}
+
+#restartButton {
+	border-color: #66FF33 !important;
+}
+
+#buttonContainer {
+	position: fixed;
+	top: 55%;
+	left: 17%;
+}
+
+#buttonContainer button {
+	width: 110%;
+	height: 110%;
+	background-color: #C0C0C0;
+	margin-top: 5px;
+	border-radius: 10px 10px 10px 10px;
+}
+
+#buttonContainer td {
+
+	padding: 10px;
+	height: 50px;
+	width: 50px;
+}
+
+/* result divs that appear after game is finished */
+#loose {
+	background-color: red;
+	width: 68%;
+	height: 72%;
+	position: absolute;
+	left: 14%;
+	top: 13%;
+	z-index: 2;
+}
+
+#win {
+	width: 86%;
+	height: 89%;
+	position: fixed;
+	left: 15%;
+	top: 9%;
+	z-index: 1;
+}
+
+/*background image */
+
+#background {
+	width: 100%;
+	height: 100%;
+	position: fixed;
+	left: 0px;
+	top: 0px;
+	z-index: -2; /* Ensure div tag stays behind content; -999 might work, too. */
+}
+
+.stretch {
+	width: 100%;
+	height: 100%;
+}
+
+/*crack image*/
+
+#crack {
+	width: 100%;
+	height: 100%;
+	position: fixed;
+	left: 0px;
+	top: 0px;
+	z-index: -1;
+}
+
+/* for winscreen and lose */
+
+.stretchResult {
+	width: 80%;
+	height: 80%;
+}
+
+/* effects */
+
+.highlighted {
+	-webkit-box-shadow: 0 0 8px #83F52C -moz-box-shadow : 0 0 8px #83F52C;
+	box-shadow: 0 0 3px #83F52C;
+	color: #83F52C;
+}
