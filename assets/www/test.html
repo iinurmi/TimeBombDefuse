@@ -119,6 +119,8 @@
 				var y = JSON.parse(window.localStorage.getItem("localy"));
 				var z = JSON.parse(window.localStorage.getItem("localz"));
 				var sens = JSON.parse(window.localStorage.getItem("sensi"));
+				var turns = JSON.parse(window.localStorage.getItem("turns"));
+				//save the localstorage variables to local variables
 				sens = parseFloat(sens);
 				xLimiter = x + sens;
 				xNegLimiter = x - sens;
@@ -126,10 +128,6 @@
 				yNegLimiter = y - sens;
 				zLimiter = z + sens;
 				zNegLimiter = z - sens;
-				console.log(sens);
-				console.log(x + y + z);
-				var turns = JSON.parse(window.localStorage.getItem("turns"));
-				console.log(turns);
 				turnsLeft = turns;
 			} catch (e) {
 				console.log(e);

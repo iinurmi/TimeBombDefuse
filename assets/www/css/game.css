@@ -44,9 +44,9 @@ body {
 }
 
 #endGameButtons {
-	position: fixed;
+	position: relative;
 	top: 55%;
-	left: 20%;
+	left: 33%;
 }
 
 #endGameButtons button {
@@ -81,16 +81,6 @@ body {
 	width: 50px;
 }
 
-/* result divs that appear after game is finished */
-#loose {
-	background-color: red;
-	width: 68%;
-	height: 72%;
-	position: absolute;
-	left: 14%;
-	top: 13%;
-	z-index: 2;
-}
 
 #win {
 	width: 86%;
@@ -109,7 +99,7 @@ body {
 	position: fixed;
 	left: 0px;
 	top: 0px;
-	z-index: -2; /* Ensure div tag stays behind content; -999 might work, too. */
+	z-index: -2; /* Ensure div tag stays behind content */
 }
 
 .stretch {
