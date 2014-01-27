@@ -60,7 +60,7 @@
 			</button>
 		</div>
 		<div id="background">
-			<img src="images/pommi_tyhja.png" class="stretch" alt="" />
+			<img src="images/newagebomb1_vihrea.png" class="stretch" alt="" />
 		</div>
 
 		<div id="crack">
@@ -212,11 +212,7 @@
 
 		function gameLogics() {
 
-			if (z <= zNegLimiter) {
-				endGame(false);
-			}
-
-			if (z >= zLimiter) {
+			if (z <= zNegLimiter || z >= zLimiter) {
 				endGame(false);
 			}
 
@@ -227,8 +223,24 @@
 			if (x <= xNegLimiter || y <= yNegLimiter) {
 				endGame(false);
 			}
+			
+			// bomb led indicator changes
+			/*if(x >= xLimiter / 2 || y >= yLimiter / 2){
+				$("#background img").attr("src", "images/newagebomb1_keltainen.png");
+			}else{
+				$("#background img").attr("src", "images/newagebomb1_vihrea.png");	
+			}
+			
+			if(x >= xNegLimiter / 2 || y >= yNegLimiter / 2){
+				$("#background img").attr("src", "images/newagebomb1_keltainen.png");
+			}else{
+				$("#background img").attr("src", "images/newagebomb1_vihrea.png");	
+			}*/
+			
+			
 		}
-
+		
+		// functions for buttons
 		// touchstart is quicker than buttonclick
 		document.addEventListener("deviceready", function() {
 			
@@ -294,14 +306,13 @@
 		function endGame(win) {
 			stopAudio();
 			stopWatch();
-			console.log("end");
 			var notifTime = 500;
 			timer(false);
 			$('#gameMechanics').hide();
 			if (win == false) {
 				/*playExplosion();*/
-				$("#background img").attr("src", "images/Pommi_Lose.png");
-				$('#crack').show();
+				$("#background img").attr("src", "images/newagebomb1_rajahdys2.png");
+				// $('#crack').show();
 				var endTime = new Date().getTime();
 				endTime = (endTime - realStartTime ) / 1000;
 				setTimeout(function() {
@@ -310,7 +321,7 @@
 			}
 
 			if (win == true) {
-				$("#background img").attr("src", "images/Pommi_Win.png");
+				$("#background img").attr("src", "images/newagebomb1_voitto.png");
 				var endTime = new Date().getTime();
 				endTime = endTime - realStartTime / 1000;
 				setTimeout(function() {
