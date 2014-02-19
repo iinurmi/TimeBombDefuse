@@ -144,7 +144,12 @@
 		// Cordova is ready
 		//
 		function onDeviceReady() {
+			document.addEventListener("backbutton", onBackKeyDown, false);
 			initialize();
+		}
+		
+	    function onBackKeyDown() {
+	    	window.location.href='index.html';
 		}
 
 		// Start watching the acceleration

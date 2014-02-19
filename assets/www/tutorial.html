@@ -6,10 +6,28 @@
 		<meta content="text/html; charset=UTF-8">
 		<link rel="stylesheet" type="text/css" href="css/index.css">
 		<script type="text/javascript" charset="utf-8" src="cordova.js"></script>
+		<script type="text/javascript" charset="utf-8" src="jquery-2.0.3.min.js"></script>
+		<style type="text/css">
+   			#s {position:fixed; top: 5px; z-index:2; color:white;}
+   			
+ 		</style>
+ 		<script type="text/javascript">
+ 		document.addEventListener("deviceready", onDeviceReady, true);
+ 		function onDeviceReady(){
+			document.addEventListener("backbutton", onBackKeyDown, false);
+		}
+	    function onBackKeyDown() {
+	    	window.location.href='index.html';
+		}
+	 	</script>
 	</head>
 
 	<body>
+		
+		<div id="s">Scroll Down</div>	
 		<img id="tutoimg" src="images/tutorial.png" />
+		<p></p>
+		
 		<button id="newgame" onclick="location.href='test.html';">Start Game</button>
 	</body>
 </html>
